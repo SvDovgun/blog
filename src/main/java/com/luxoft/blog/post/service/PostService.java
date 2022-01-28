@@ -1,13 +1,16 @@
 package com.luxoft.blog.post.service;
 
+import com.luxoft.blog.post.error.PostNotFoundException;
 import com.luxoft.blog.post.repository.PostRepository;
 import com.luxoft.blog.post.entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class PostService {
@@ -19,7 +22,7 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    public List<Post> getPosts() {
+    public List<Post> getAllPosts() {
         System.out.println("in blog method");
         return postRepository.findAll();
     }
@@ -58,5 +61,32 @@ public class PostService {
             existedPost.setContent(newDataOfPost.getContent());
         }
 
+    }
+
+    public List<Post> getPostByTitle(String title) {
+        return postRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Post> getAllPostAndSortByTitle(String sort) {
+        if (sort.equalsIgnoreCase("desc")){
+            return postRepository.getAllByOrderByTitleDesc();
+        }
+        return postRepository.getAllByOrderByTitle();
+    }
+
+    public List<Post> getPostByTitleAndSortByTitle(String title,String sort) {
+        if (sort.equalsIgnoreCase("desc")){
+            return postRepository.findByTitleContainingIgnoreCaseOrderByTitleDesc(title);
+        }
+        return postRepository.findByTitleContainingIgnoreCaseOrderByTitle(title);
+    }
+
+    public Post getPostById(Long postId) throws PostNotFoundException {
+        Optional<Post> postById = postRepository.findPostById(postId);
+
+        if (!postById.isPresent()){
+            throw new PostNotFoundException("Searched post are not found");
+        }
+        return postById.get();
     }
 }

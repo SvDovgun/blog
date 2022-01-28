@@ -16,11 +16,13 @@ public class PostConfig {
         return  args -> {
             Post title = new Post(
                     "title line",
-                    "many many text of content"
+                    "many many text of content",
+                    true
             );
             Post discuss1  = new Post(
                     "JPA discussion",
-                    "is JBA better of JDBC?"
+                    "is JBA better of JDBC?",
+                    false
             );
             repository.saveAll(
                     List.of(title, discuss1)
