@@ -27,4 +27,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> getAllByOrderByTitle();
 
     List<Post> getAllByOrderByTitleDesc();
+
+    List<Post> getAllByStarEquals(Boolean star);
 }

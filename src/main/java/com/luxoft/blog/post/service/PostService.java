@@ -4,7 +4,6 @@ import com.luxoft.blog.post.error.PostNotFoundException;
 import com.luxoft.blog.post.repository.PostRepository;
 import com.luxoft.blog.post.entity.Post;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,7 +26,7 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public void addPost(Post post) {
+    public void savePost(Post post) {
 //        Optional<Post> postExisted = postRepository.findPostByTitle(post.getTitle());
 //        if (postExisted.isPresent()){
 //            throw  new IllegalStateException("post existed already");
@@ -88,5 +87,21 @@ public class PostService {
             throw new PostNotFoundException("Searched post are not found");
         }
         return postById.get();
+    }
+
+    public List<Post> fetchPostsWithStar(boolean star) {
+        return postRepository.getAllByStarEquals(star);
+    }
+
+    public void setStarOfPost(Long postId, boolean starFlag) throws PostNotFoundException {
+        Optional<Post> postById = postRepository.findPostById(postId);
+
+        if (postById.isPresent()){
+            postById.get().setStar(starFlag);
+            postRepository.save(postById.get());
+
+        } else {
+            throw new PostNotFoundException("Searched post are not found");
+        }
     }
 }

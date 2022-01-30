@@ -7,12 +7,10 @@ import com.luxoft.blog.post.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,6 +46,7 @@ public class PostController {
     @GetMapping(path = "{postId}" )
     public Post getPostById(@PathVariable("postId") Long postId)
             throws PostNotFoundException {
+        LOGGER.info("Inside getPostById in PostController");
 //        try {
 //            return  postService.getPostById(postId);
 //        } catch (PostNotFoundException e) {
@@ -59,14 +58,15 @@ public class PostController {
     }
 
     @PostMapping
-    public void postNewPost (@Valid @RequestBody Post post) {
-        LOGGER.info("Inside postNewPost in PostController");
-        postService.addPost(post);
+    public void savePost(@Valid @RequestBody Post post) {
+        LOGGER.info("Inside savePost in PostController");
+        postService.savePost(post);
 
     }
 
     @DeleteMapping(path = "{postId}" )
     public void deletePost(@PathVariable("postId") Long postId) {
+        LOGGER.info("Inside deletePost of PostController");
         postService.deletePost(postId);
 
     }
@@ -74,7 +74,27 @@ public class PostController {
     @PutMapping(path = "{postId}" )
     public void updatePost(@PathVariable("postId") Long postId,
                            @RequestBody Post post) {
+        LOGGER.info("Inside updatePost of PostController");
         postService.updatePost(postId, post);
 
+    }
+
+    @GetMapping(path = "/star" )
+    public List<Post> getPostsWithStar() {
+        LOGGER.info("Inside getPostsWithStar of PostController");
+        List<Post> posts = postService.fetchPostsWithStar(true);
+        return posts;
+    }
+
+    @PutMapping(path = "{postId}/star" )
+    public void setStarOfPost(@PathVariable("postId") Long postId) throws PostNotFoundException {
+        LOGGER.info("Inside setStarOfPost of PostController");
+        postService.setStarOfPost(postId, true);
+    }
+
+    @DeleteMapping(path = "{postId}/star" )
+    public void deleteStarOfPost(@PathVariable("postId") Long postId) throws PostNotFoundException {
+        LOGGER.info("Inside deleteStarOfPost of PostController");
+        postService.setStarOfPost(postId, false);
     }
 }

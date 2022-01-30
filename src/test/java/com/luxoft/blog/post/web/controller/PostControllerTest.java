@@ -4,6 +4,7 @@ import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.service.PostService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,28 @@ class PostControllerTest {
     @MockBean
     private PostService postService;
 
+    private Post post;
+
     @BeforeEach
     void setUp() {
-
+        post = Post.builder()
+                .title("Post GB")
+                .content("test post record")
+                .star(true)
+                .id(1L)
+                .build();
     }
+
+//    @Test
+//    void getPost(){
+//        Post inputPost = Post.builder()
+//                .title("Post GB")
+//                .content("test post record")
+//                .star(true)
+//                .build();
+//
+//        Mockito.when(postService.getAllPosts()).thenReturn(post);
+//    }
 
     @Test
     void shouldCreateMockMvc() {
