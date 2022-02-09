@@ -1,6 +1,5 @@
 package com.luxoft.blog.post.service;
 
-import com.luxoft.blog.BlogApplication;
 import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.error.PostNotFoundException;
 import com.luxoft.blog.post.repository.PostRepository;
@@ -57,23 +56,23 @@ class PostServiceTest {
 
     @Test
     void whenValidPostTitle_ThenPostsShouldFound(){
-
+        // when
         List<Post> foundPosts = postService.getPostByTitle(postTitle);
-
+        // then
         assertEquals(2, foundPosts.size());
     }
 
     @Test
     void whenInvalidPostTitle_ThenNoPostsShouldFound(){
-
+        // when
         List<Post> foundPosts = postService.getPostByTitle("invalid title");
-
-
+        // then
         assertEquals(0, foundPosts.size());
     }
 
     @Test
     void whenValidPostId_ThenPostShouldFound() throws PostNotFoundException {
+        // prepare
         Post firstPost = Post.builder()
                 .id(1L)
                 .title(postTitle)
@@ -83,9 +82,9 @@ class PostServiceTest {
 
         Mockito.when(postRepositoryMock.findPostById(1L))
                 .thenReturn(Optional.ofNullable(firstPost));
-
+        // when
         Post postById = postService.getPostById(1L);
-
+        // then
         assertEquals(1L, postById.getId());
         assertNotNull(postById);
         assertEquals(postTitle, postById.getTitle());

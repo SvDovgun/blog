@@ -27,22 +27,17 @@ public class PostService {
     }
 
     public void savePost(Post post) {
-//        Optional<Post> postExisted = postRepository.findPostByTitle(post.getTitle());
-//        if (postExisted.isPresent()){
-//            throw  new IllegalStateException("post existed already");
-//        }
         postRepository.save(post);
     }
 
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId) throws PostNotFoundException {
         boolean exists = postRepository.existsById(postId);
         if (!exists) {
-            throw  new IllegalStateException("Post by id " + postId + " doesn't exist");
+            throw  new PostNotFoundException("Post by id " + postId + " doesn't exist");
         }
         postRepository.deleteById(postId);
 
     }
-
     @Transactional
     public void updatePost(Long postId, Post newDataOfPost) {
         Post existedPost = postRepository.findById(postId)

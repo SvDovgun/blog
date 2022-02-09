@@ -1,8 +1,13 @@
 package com.luxoft.blog.post.web.controller;
 
 
+import com.luxoft.blog.post.dto.DefaultCommentDto;
+import com.luxoft.blog.post.dto.DefaultPostDto;
+import com.luxoft.blog.post.dto.FullPost;
+import com.luxoft.blog.post.entity.Comment;
 import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.error.PostNotFoundException;
+import com.luxoft.blog.post.service.CommentService;
 import com.luxoft.blog.post.service.PostService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,32 +25,41 @@ import java.util.Objects;
 @RequestMapping(path = "api/v1/posts")
 public class PostController {
 
-    private  final PostService postService;
+    private final PostService postService;
 
     private final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    public PostController(PostService postService) {
+    public PostController(PostService postService ) {
         this.postService = postService;
     }
 
     @GetMapping //(path = "/posts")
-    public List<Post> getPost(@RequestParam(name = "title", required = false) String title,
-                              @RequestParam(name = "sort", required = false) String sort) {
-        LOGGER.info("Inside getPost in PostController");
+    public List<DefaultPostDto> getPosts(@RequestParam(name = "title", required = false) String title,
+                                         @RequestParam(name = "sort", required = false) String sort) {
+        LOGGER.info("Inside getPosts in PostController");
+        List<Post> posts= null;
+
         if (Objects.nonNull(title) && Objects.isNull(sort)) {
-               return postService.getPostByTitle(title);
+            posts = postService.getPostByTitle(title);
         } else if (Objects.isNull(title) && Objects.nonNull(sort)) {
-              return postService.getAllPostAndSortByTitle(sort);
+            posts = postService.getAllPostAndSortByTitle(sort);
         } else if (Objects.nonNull(title) && Objects.nonNull(sort)) {
-             return postService.getPostByTitleAndSortByTitle(title, sort);
+            posts = postService.getPostByTitleAndSortByTitle(title, sort);
+        } else {
+            posts = postService.getAllPosts();
         }
 
-        return  postService.getAllPosts();
+        List<DefaultPostDto> allPosts = new ArrayList<>();
+        for (Post post : posts) {
+            allPosts.add(toPostWithoutCommentDto(post));
+        }
+
+        return allPosts;
     }
 
     @GetMapping(path = "{postId}" )
-    public Post getPostById(@PathVariable("postId") Long postId)
+    public FullPost getPostById(@PathVariable("postId") Long postId)
             throws PostNotFoundException {
         LOGGER.info("Inside getPostById in PostController");
 //        try {
@@ -53,7 +68,7 @@ public class PostController {
 //            throw new PostNotFoundException("Post is not available ");
 //        }
 //        return null;
-        return  postService.getPostById(postId);
+        return  toFullPostDto(postService.getPostById(postId));
 
     }
 
@@ -65,7 +80,7 @@ public class PostController {
     }
 
     @DeleteMapping(path = "{postId}" )
-    public void deletePost(@PathVariable("postId") Long postId) {
+    public void deletePost(@PathVariable("postId") Long postId) throws PostNotFoundException {
         LOGGER.info("Inside deletePost of PostController");
         postService.deletePost(postId);
 
@@ -80,10 +95,14 @@ public class PostController {
     }
 
     @GetMapping(path = "/star" )
-    public List<Post> getPostsWithStar() {
+    public List<DefaultPostDto> getPostsWithStar() {
         LOGGER.info("Inside getPostsWithStar of PostController");
         List<Post> posts = postService.fetchPostsWithStar(true);
-        return posts;
+        List<DefaultPostDto> postsDto = new ArrayList<>();
+        for (Post post : posts) {
+            postsDto.add(toPostWithoutCommentDto(post));
+        }
+        return postsDto;
     }
 
     @PutMapping(path = "{postId}/star" )
@@ -96,5 +115,40 @@ public class PostController {
     public void deleteStarOfPost(@PathVariable("postId") Long postId) throws PostNotFoundException {
         LOGGER.info("Inside deleteStarOfPost of PostController");
         postService.setStarOfPost(postId, false);
+    }
+
+    DefaultPostDto toPostWithoutCommentDto(Post post){
+        DefaultPostDto defaultPostDto = new DefaultPostDto();
+        defaultPostDto.setId(post.getId());
+        defaultPostDto.setTitle(post.getTitle());
+        defaultPostDto.setContent(post.getContent());
+        defaultPostDto.setStar(post.isStar());
+
+        return defaultPostDto;
+    }
+
+    FullPost toFullPostDto(Post post){
+        FullPost fullPost = new FullPost();
+        fullPost.setId(post.getId());
+        fullPost.setTitle(post.getTitle());
+        fullPost.setContent(post.getContent());
+        fullPost.setStar(post.isStar());
+
+        List<Comment> comments = post.getComments(); //commentService.fetchComments(post.getId());
+        List<DefaultCommentDto> allCommentsDto = new ArrayList<>();
+        for (Comment comment : comments) {
+            allCommentsDto.add(toDefaultCommentDto(comment));
+        }
+        fullPost.setComments(allCommentsDto);
+
+        return fullPost;
+    }
+
+    DefaultCommentDto toDefaultCommentDto(Comment comment){
+        DefaultCommentDto commentDto = new DefaultCommentDto();
+        commentDto.setCommentId(comment.getCommentId());
+        commentDto.setCreationDate(comment.getCreationDate());
+        commentDto.setText(comment.getText());
+        return commentDto;
     }
 }
