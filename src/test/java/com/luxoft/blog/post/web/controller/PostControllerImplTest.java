@@ -3,7 +3,9 @@ package com.luxoft.blog.post.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.service.PostService;
+import com.luxoft.blog.post.service.PostServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -23,13 +25,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(PostController.class)
-class PostControllerTest {
+class PostControllerImplTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private PostService postServiceMock;
+    private PostServiceImpl postServiceMock;
 
     @Autowired
     private ObjectMapper mapper;
@@ -48,6 +50,7 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("test POST of Save new Post record")
     void shouldSavePost() throws Exception {
         Post inputPost = Post.builder()
                 .title("Post GB")
@@ -63,8 +66,8 @@ class PostControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(inputPost)))
                 .andExpect(status().isOk());
-        // TODO investigate issue in additional empty line in actual result
-        //verify(postServiceMock, times(1)).savePost(inputPost);
+
+        verify(postServiceMock, times(1)).savePost(inputPost);
     }
 
     @Test
@@ -73,6 +76,7 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("test GET of all posts")
     void shouldReturnListOfPost() throws Exception {
         Post post1 = Post.builder()
                 .title("Post GB")
@@ -110,6 +114,7 @@ class PostControllerTest {
     }
 
     @Test
+    @DisplayName("test GET of one specified post by ID")
     void shouldReturnPostById() throws Exception {
         post = Post.builder()
                 .title("Post GB")

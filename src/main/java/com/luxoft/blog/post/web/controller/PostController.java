@@ -7,8 +7,7 @@ import com.luxoft.blog.post.dto.FullPost;
 import com.luxoft.blog.post.entity.Comment;
 import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.error.PostNotFoundException;
-import com.luxoft.blog.post.service.CommentService;
-import com.luxoft.blog.post.service.PostService;
+import com.luxoft.blog.post.service.PostServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +24,12 @@ import java.util.Objects;
 @RequestMapping(path = "api/v1/posts")
 public class PostController {
 
-    private final PostService postService;
+    private final PostServiceImpl postService;
 
     private final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    public PostController(PostService postService ) {
+    public PostController(PostServiceImpl postService ) {
         this.postService = postService;
     }
 
@@ -59,17 +58,19 @@ public class PostController {
     }
 
     @GetMapping(path = "{postId}" )
-    public FullPost getPostById(@PathVariable("postId") Long postId)
+    public DefaultPostDto getPostById(@PathVariable("postId") Long postId)
             throws PostNotFoundException {
         LOGGER.info("Inside getPostById in PostController");
-//        try {
-//            return  postService.getPostById(postId);
-//        } catch (PostNotFoundException e) {
-//            throw new PostNotFoundException("Post is not available ");
-//        }
-//        return null;
-        return  toFullPostDto(postService.getPostById(postId));
 
+        return  toPostWithoutCommentDto(postService.getPostById(postId));
+
+    }
+
+    @GetMapping(path = "{postId}/full" )
+    public FullPost getFullPostById(@PathVariable("postId") Long postId)
+            throws PostNotFoundException {
+        LOGGER.info("Inside getPostById in PostController");
+        return  toFullPostDto(postService.getPostById(postId));
     }
 
     @PostMapping

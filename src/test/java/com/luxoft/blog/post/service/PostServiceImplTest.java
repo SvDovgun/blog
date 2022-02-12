@@ -4,6 +4,7 @@ import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.error.PostNotFoundException;
 import com.luxoft.blog.post.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class PostServiceTest {
+class PostServiceImplTest {
 
     @Autowired
-    private PostService postService;
+    private PostServiceImpl postService;
 
     @MockBean
     private PostRepository postRepositoryMock;
@@ -55,6 +56,7 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("test search of post according title")
     void whenValidPostTitle_ThenPostsShouldFound(){
         // when
         List<Post> foundPosts = postService.getPostByTitle(postTitle);
@@ -63,6 +65,7 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("test search of post with title, that not exist")
     void whenInvalidPostTitle_ThenNoPostsShouldFound(){
         // when
         List<Post> foundPosts = postService.getPostByTitle("invalid title");
@@ -71,6 +74,7 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("test search of post by id, expect success")
     void whenValidPostId_ThenPostShouldFound() throws PostNotFoundException {
         // prepare
         Post firstPost = Post.builder()
@@ -94,6 +98,7 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("attempt to search of post by invalid id value, expect error")
     void whenInvalidPostId_ThenException()  {
         Mockito.when(postRepositoryMock.findPostById(546L))
                 .thenThrow(new IllegalArgumentException());
@@ -101,6 +106,7 @@ class PostServiceTest {
     }
 
     @Test
+    @DisplayName("test search of posts with star=true, expect to found 2 records")
     void whenRequiredPostWithStar_ThenPostsShouldFound(){
         Post post3 = Post.builder()
                 .id(3L)

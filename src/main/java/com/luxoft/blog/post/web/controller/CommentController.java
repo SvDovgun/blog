@@ -5,7 +5,7 @@ import com.luxoft.blog.post.dto.DefaultPostDto;
 import com.luxoft.blog.post.entity.Comment;
 import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.error.PostNotFoundException;
-import com.luxoft.blog.post.service.CommentService;
+import com.luxoft.blog.post.service.CommentServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +17,11 @@ import java.util.List;
 @RequestMapping(path = "api/v1/posts")
 public class CommentController {
 
-    public CommentController(CommentService commentService) {
+    public CommentController(CommentServiceImpl commentService) {
         this.commentService = commentService;
     }
 
-    private final CommentService commentService;
+    private final CommentServiceImpl commentService;
 
     private final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
@@ -69,7 +69,7 @@ public class CommentController {
     public CommentWithPostDto fetchComment(@PathVariable("postId") Long postId,
                                 @PathVariable("commentId") Long commentId) {
         LOGGER.info("Inside fetchAllComments of PostController");
-        Comment comment = commentService.fetchComment(commentId);
+        Comment comment = commentService.fetchComment( postId,commentId);
 
         return toCommentWithPostDto(comment);
     }

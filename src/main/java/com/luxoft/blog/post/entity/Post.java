@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -68,5 +69,18 @@ public class Post {
 
     public boolean isStar() {
         return this.star;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return star == post.star && id.equals(post.id) && title.equals(post.title) && content.equals(post.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, content, star);
     }
 }
