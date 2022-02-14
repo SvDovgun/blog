@@ -5,6 +5,7 @@ import com.luxoft.blog.post.dto.DefaultPostDto;
 import com.luxoft.blog.post.entity.Comment;
 import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.error.PostNotFoundException;
+import com.luxoft.blog.post.service.CommentService;
 import com.luxoft.blog.post.service.CommentServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,11 @@ import java.util.List;
 @RequestMapping(path = "api/v1/posts")
 public class CommentController {
 
-    public CommentController(CommentServiceImpl commentService) {
+    public CommentController(CommentService commentService) {
         this.commentService = commentService;
     }
 
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
 
     private final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 

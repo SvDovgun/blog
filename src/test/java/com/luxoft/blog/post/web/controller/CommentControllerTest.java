@@ -3,6 +3,7 @@ package com.luxoft.blog.post.web.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luxoft.blog.post.entity.Comment;
 import com.luxoft.blog.post.entity.Post;
+import com.luxoft.blog.post.service.CommentService;
 import com.luxoft.blog.post.service.CommentServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class CommentControllerTest {
     private ObjectMapper mapper;
 
     @MockBean
-    private CommentServiceImpl commentServiceMock;
+    private CommentService commentServiceMock;
 
     Post post = Post.builder()
              .id(1L)

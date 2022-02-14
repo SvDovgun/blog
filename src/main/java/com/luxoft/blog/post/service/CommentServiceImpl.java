@@ -23,7 +23,7 @@ public class CommentServiceImpl implements CommentService{
         this.postRepository = postRepository;
     }
 
-
+    @Override
     public Comment saveComment(Long postId, Comment comment) throws PostNotFoundException {
         System.out.println("in saveComment, postId" + postId);
         Optional<Post> postFromDB = postRepository.findPostById(postId);
@@ -33,12 +33,13 @@ public class CommentServiceImpl implements CommentService{
         Comment commentToDB = commentRepository.save(comment);
         return commentToDB;
     }
-
+    @Override
     public List<Comment> fetchComments(Long postId) {
         List<Comment> comments =commentRepository.findAllCommentsByPostId(postId);
         return comments;
     }
 
+    @Override
     public Comment fetchComment(Long postId, Long commentId) {
         Optional<Comment> commentById = commentRepository.findCommentByCommentIdAndAndPost(commentId, postId);
 

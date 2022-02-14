@@ -1,10 +1,10 @@
 package com.luxoft.blog.post.entity;
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -40,6 +40,17 @@ public class Post {
             orphanRemoval = true)
     private List<Comment> comments;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //{CascadeType.MERGE, CascadeType.PERSIST})
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    @JoinTable(name = "post_tags",
+            joinColumns = { @JoinColumn(name = "post_id") },
+            inverseJoinColumns = { @JoinColumn(name = "tag_id")  })
+    private Set<Tag> tags  = new HashSet<>();
+
+    public Set<Tag> getTags(){
+        return tags;
+    }
+
     public Post(String title, String content, boolean star) {
         this.title = title;
         this.content = content;
@@ -55,6 +66,10 @@ public class Post {
 
     @Override
     public String toString() {
+        Set<String> tagNames = new HashSet<>();
+        for (Tag tag : tags) {
+            tagNames.add(tag.getName());
+        }
         return "Post{" +
                 "id=" + id +
                 ", title='" + title + '\'' +

@@ -31,7 +31,7 @@ class PostControllerImplTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PostServiceImpl postServiceMock;
+    private PostService postServiceMock;
 
     @Autowired
     private ObjectMapper mapper;

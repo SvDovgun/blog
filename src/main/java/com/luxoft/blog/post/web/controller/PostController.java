@@ -7,6 +7,7 @@ import com.luxoft.blog.post.dto.FullPost;
 import com.luxoft.blog.post.entity.Comment;
 import com.luxoft.blog.post.entity.Post;
 import com.luxoft.blog.post.error.PostNotFoundException;
+import com.luxoft.blog.post.service.PostService;
 import com.luxoft.blog.post.service.PostServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,12 @@ import java.util.Objects;
 @RequestMapping(path = "api/v1/posts")
 public class PostController {
 
-    private final PostServiceImpl postService;
+    private final PostService postService;
 
     private final Logger LOGGER = LoggerFactory.getLogger(PostController.class);
 
     @Autowired
-    public PostController(PostServiceImpl postService ) {
+    public PostController(PostService postService ) {
         this.postService = postService;
     }
 

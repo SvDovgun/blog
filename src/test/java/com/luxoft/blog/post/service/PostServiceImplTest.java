@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 class PostServiceImplTest {
 
     @Autowired
-    private PostServiceImpl postService;
+    private PostService postService;
 
     @MockBean
     private PostRepository postRepositoryMock;

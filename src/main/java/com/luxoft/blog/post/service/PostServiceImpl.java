@@ -21,15 +21,18 @@ public class PostServiceImpl implements PostService{
         this.postRepository = postRepository;
     }
 
+    @Override
     public List<Post> getAllPosts() {
         System.out.println("in blog method");
         return postRepository.findAll();
     }
 
+    @Override
     public void savePost(Post post) {
         postRepository.save(post);
     }
 
+    @Override
     public void deletePost(Long postId) throws PostNotFoundException {
         boolean exists = postRepository.existsById(postId);
         if (!exists) {
@@ -39,6 +42,7 @@ public class PostServiceImpl implements PostService{
 
     }
     @Transactional
+    @Override
     public void updatePost(Long postId, Post newDataOfPost) {
         Post existedPost = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalStateException("post with id =" + postId + "doesn't exist"));
@@ -57,10 +61,12 @@ public class PostServiceImpl implements PostService{
 
     }
 
+    @Override
     public List<Post> getPostByTitle(String title) {
         return postRepository.findByTitleContainingIgnoreCase(title);
     }
 
+    @Override
     public List<Post> getAllPostAndSortByTitle(String sort) {
         if (sort.equalsIgnoreCase("desc")){
             return postRepository.getAllByOrderByTitleDesc();
@@ -68,6 +74,7 @@ public class PostServiceImpl implements PostService{
         return postRepository.getAllByOrderByTitle();
     }
 
+    @Override
     public List<Post> getPostByTitleAndSortByTitle(String title,String sort) {
         if (sort.equalsIgnoreCase("desc")){
             return postRepository.findByTitleContainingIgnoreCaseOrderByTitleDesc(title);
@@ -75,6 +82,7 @@ public class PostServiceImpl implements PostService{
         return postRepository.findByTitleContainingIgnoreCaseOrderByTitle(title);
     }
 
+    @Override
     public Post getPostById(Long postId) throws PostNotFoundException {
         Optional<Post> postById = postRepository.findPostById(postId);
 
@@ -84,10 +92,12 @@ public class PostServiceImpl implements PostService{
         return postById.get();
     }
 
+    @Override
     public List<Post> fetchPostsWithStar(boolean star) {
         return postRepository.getAllByStarEquals(star);
     }
 
+    @Override
     public void setStarOfPost(Long postId, boolean starFlag) throws PostNotFoundException {
         Optional<Post> postById = postRepository.findPostById(postId);
 

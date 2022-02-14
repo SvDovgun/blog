@@ -4,7 +4,7 @@ This is a spring boot app. In order for it to work, you need to create a databas
 
 Run docker: 
 docker run --name postgresql-container -p 5000:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=blog -d postgres
-
+-- grant all privileges on database "blog" to postgres;
 Run BlogApplication. Tables will be created automatically
 
 Request examples and what they do:
@@ -47,4 +47,14 @@ CommentController:
         example of json for comment creation :
             {
             "text": "second comment , which added to post"
+            }
+
+TagController: 
+
+    GET http://localhost:8080/api/v1/posts/tags - get all existed tags;
+
+    POST http://localhost:8080/api/v1/posts/2/tags - add tag to post;
+        example of json for comment creation :
+            {
+            "name": "java"
             }
